@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lesson37</title>
+  <style>
+    
+
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  //进行封装，非常方便维护。
+  const listRelativeEffect = () =>{
+    const { reactive} = Vue;
+    const list = reactive([])
+    const addItemToList = (item)=>{
+        list.push(item);
+    }
+    return{
+      list,
+      addItemToList,
+    }
+  }
+
+  const inputRelativeEffect = ()=>{
+    const { ref} = Vue;
+    const inputValue = ref('');
+    const handleChange = (e)=>{
+        inputValue.value = e.target.value
+    }
+    return{inputValue,handleChange}
+  } 
+
+  const app = Vue.createApp({ 
+    setup(){
+      //流程的调度中转
+      const {list, addItemToList}= listRelativeEffect();
+      const {inputValue,handleChange}= inputRelativeEffect();
+
+
+      return{
+        list,
+        inputValue,
+        handleChange,
+        addItemToList,
+      }
+    },
+    template: `
+      <div> 
+        <input :value="inputValue" @input="handleChange"/>
+        <button @click="()=>addItemToList(inputValue)">提交</button>
+        <ul>
+          <li v-for="(item,index) in list" :key="index">{{item}}</li>
+        </ul>
+        
+      </div>
+    `
+  });
+
+
+  
+  const vm = app.mount('#root');
+</script>
+</html>
